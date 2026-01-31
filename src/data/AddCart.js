@@ -4,17 +4,15 @@ export const addToCart = (movie, user) => {
   const movieKey = `movie_${user.email}`;
   const movies = JSON.parse(localStorage.getItem(movieKey)) || [];
 
+  // Check if movie already exists
   const movieExists = movies.find(item => item.id === movie.id);
 
-  let updatedMovie;
-  if(movieExists){
-    updatedMovie = movies.map(item =>
-      item.id === movie.id ? {...item, quantity: item.quantity + 1} : item
-    );
-  } else {
-    updatedMovie = [...movies, {...movie, quantity: 1}];
+  let updatedMovies;
+  if (!movieExists) {
+    updatedMovies = [...movies, movie]; // just add the movie
+    localStorage.setItem(movieKey, JSON.stringify(updatedMovies));
+    return `${movie.title} added to favorites!`;
   }
 
-  localStorage.setItem(movieKey, JSON.stringify(updatedMovie));
-  return `${movie.title} added to cart!`; // just return message
+  return null; // movie already exists, do nothing
 };

@@ -1,5 +1,5 @@
 import { Button } from "./Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addToCart } from "../data/AddCart";
 import { toast } from "react-toastify";
 import { useContext } from "react";
@@ -7,9 +7,11 @@ import MovieContext from "../context/MovieContext";
 
 
 
-const MovieCard = ({ movie, showBtns = true, isDescrip = false, user }) => {
+const MovieCard = ({ movie, showBtns = true, isDescrip = false, user, showBack = false }) => {
 
   const { IMAGE_BASE_URL } = useContext(MovieContext)
+
+  const navigate = useNavigate()
 
   if (!movie) return null; // stop pretending this never happens
 
@@ -64,6 +66,9 @@ const MovieCard = ({ movie, showBtns = true, isDescrip = false, user }) => {
             </Button>
           </>
         )}
+        {showBack && 
+        <Button variant='primary' className = "my-4" onClick={()=>navigate("/movies")} >Back</Button>
+        }
       </div>
     </div>
   );

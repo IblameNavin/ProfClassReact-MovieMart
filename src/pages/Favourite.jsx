@@ -2,10 +2,11 @@ import React, { useContext, useEffect } from 'react';
 import { Button } from '../components/Button';
 import { toast } from 'react-toastify';
 import MovieContext from '../context/MovieContext';
+import { useNavigate } from 'react-router-dom';
 
 export const Favourite = ({ user }) => {
   
-
+ const navigate = useNavigate()
   const { movieItems, setMovieItems, IMAGE_BASE_URL } = useContext(MovieContext);
 
   useEffect(() => {
@@ -39,6 +40,8 @@ export const Favourite = ({ user }) => {
     updateMovie(updatedMovie, 'Item removed from favourites');
   };
 
+ 
+
   return (
     <div className="p-10 grid grid-cols-4 gap-4">
       {movieItems.length === 0 ? (
@@ -71,13 +74,13 @@ export const Favourite = ({ user }) => {
               <p className="font-medium text-lg">
                 {(item?.original_title || item?.title || "Unknown").slice(0, 20)}...
               </p>
-              <p className="text-gray-600">Qty: {item?.quantity || 1}</p>
             </div>
             <p className="text-gray-800 font-semibold mb-3">
               Vote Average: {item?.vote_average ?? 'N/A'}
             </p>
 
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-around gap-4">
+              <Button varint = "outline" onClick={()=>navigate("/movies")}>Back</Button>
               <Button variant="danger" onClick={() => handleRemove(item?.id)}>Remove</Button>
             </div>
           </div>

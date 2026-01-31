@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import MovieCard from '../components/MovieCard'
 import MovieContext from '../context/MovieContext'
+import { Button } from '../components/Button'
 
 const MovieDetails = ({ user }) => {
   const { movie, setMovie } = useContext(MovieContext)
@@ -41,7 +42,9 @@ const MovieDetails = ({ user }) => {
         showBtns={false}
         isDescrip={true}
         user={user}
+        showBack = {true}
       />
+    
     </div>
   )
 }
