@@ -1,6 +1,6 @@
 import { Button } from "./Button";
 import { Link, useNavigate } from "react-router-dom";
-import { addToCart } from "../data/AddCart";
+import { addToFav } from "../data/AddToFav";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import MovieContext from "../context/MovieContext";
@@ -13,14 +13,14 @@ const MovieCard = ({ movie, showBtns = true, isDescrip = false, user, showBack =
 
   const navigate = useNavigate()
 
-  if (!movie) return null; // stop pretending this never happens
+  if (!movie) return null; 
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     try {
-      const message = addToCart(movie, user);
+      const message = addToFav(movie, user);
       if (message) toast.success(message);
       else if (user) toast.success("Added to cart!");
     } catch {

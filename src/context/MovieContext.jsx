@@ -1,9 +1,7 @@
 import React, { createContext, useState } from "react";
 
-// Create the context
 const MovieContext = createContext();
 
-// Provider component
 export const MovieContextProvider = ({ children }) => {
   const [movieItems, setMovieItems] = useState([]);
   const [movie, setMovie] = useState(null)
@@ -21,5 +19,4 @@ export const MovieContextProvider = ({ children }) => {
   );
 };
 
-// Export the context itself for useContext
 export default MovieContext;

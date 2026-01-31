@@ -11,7 +11,7 @@ export const Favourite = ({ user }) => {
 
   useEffect(() => {
     if (!user?.email) return;
-    const movieKey = `movie_${user.email}`; // must match addToCart
+    const movieKey = `movie_${user.email}`; 
     try {
       const movies = JSON.parse(localStorage.getItem(movieKey)) || [];
       setMovieItems(movies);
@@ -23,7 +23,7 @@ export const Favourite = ({ user }) => {
 
   const updateMovie = (updatedMovie, message) => {
     setMovieItems(updatedMovie);
-    localStorage.setItem(`movie_${user.email}`, JSON.stringify(updatedMovie)); // fixed
+    localStorage.setItem(`movie_${user.email}`, JSON.stringify(updatedMovie)); 
     toast.success(message, {
       position: "top-right",
       autoClose: 1500,
@@ -53,7 +53,7 @@ export const Favourite = ({ user }) => {
             key={item?.id || Math.random()}
             className="flex flex-col border rounded p-4 w-full shadow-sm"
           >
-            {/* Image placeholder */}
+           
             <div className="h-60 w-full bg-gray-200 mb-3 flex items-center justify-center">
               {item?.poster_path ? (
                  <img
