@@ -11,21 +11,24 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import MovieDetails from './pages/MovieDetails'
 import MovieContext from './context/MovieContext'
+import { getCurrentUser, isTokenValid } from './utils/token'
 
 const App = () => {
-  
-
   const { user, setUser } = useContext(MovieContext)
-   const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-   const storedUser = (localStorage.getItem("currentUser"))
-  if(storedUser) {
-   
-    setUser(JSON.parse(storedUser))
-  }
-  setLoading(false)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Check token validity first
+    if (isTokenValid()) {
+      const storedUser = getCurrentUser()
+      if (storedUser) {
+        setUser(storedUser)
+      }
+    } else {
+      setUser(null)
+    }
+    setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
 

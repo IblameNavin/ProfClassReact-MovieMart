@@ -1,17 +1,8 @@
-export const addToFav = (movie, user) => {
-  if (!user) return null; 
+import { addToFavorites } from '../utils/favorites';
 
-  const movieKey = `movie_${user.email}`;
-  const movies = JSON.parse(localStorage.getItem(movieKey)) || [];
+export const addToFav = async (movie, user) => {
+  if (!user || !user.uid) return null; 
 
-  const movieExists = movies.find(item => item.id === movie.id);
-
-  let updatedMovies;
-  if (!movieExists) {
-    updatedMovies = [...movies, movie]; 
-    localStorage.setItem(movieKey, JSON.stringify(updatedMovies));
-    return `${movie.title} added to favorites!`;
-  }
-
-  return null; 
+  const result = await addToFavorites(movie, user.uid);
+  return result;
 };

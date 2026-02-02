@@ -1,51 +1,83 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button } from '../components/Button';
 import { toast } from 'react-toastify';
 import MovieContext from '../context/MovieContext';
 import { useNavigate } from 'react-router-dom';
+import { getUserFavorites, removeFromFavorites } from '../utils/favorites';
 
 export const Favourite = ({ user }) => {
   
  const navigate = useNavigate()
   const { movieItems, setMovieItems, IMAGE_BASE_URL } = useContext(MovieContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user?.email) return;
-    const movieKey = `movie_${user.email}`; 
-    try {
-      const movies = JSON.parse(localStorage.getItem(movieKey)) || [];
-      setMovieItems(movies);
-    } catch (e) {
-      setMovieItems([]);
-      console.log(e);
-    }
+    const loadFavorites = async () => {
+      if (!user?.uid) {
+        setMovieItems([]);
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        const favorites = await getUserFavorites(user.uid);
+        setMovieItems(favorites);
+      } catch (e) {
+        setMovieItems([]);
+        console.error('Error loading favorites:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadFavorites();
   }, [user, setMovieItems]);
 
-  const updateMovie = (updatedMovie, message) => {
-    setMovieItems(updatedMovie);
-    localStorage.setItem(`movie_${user.email}`, JSON.stringify(updatedMovie)); 
-    toast.success(message, {
-      position: "top-right",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
-
-  const handleRemove = (id) => {
-    const updatedMovie = movieItems.filter(item => item?.id !== id);
-    updateMovie(updatedMovie, 'Item removed from favourites');
+  const handleRemove = async (id) => {
+    if (!user?.uid) return;
+    
+    try {
+      const success = await removeFromFavorites(id, user.uid);
+      if (success) {
+        const updatedMovie = movieItems.filter(item => item?.id !== id);
+        setMovieItems(updatedMovie);
+        toast.success('Item removed from favourites', {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error('Failed to remove item');
+      }
+    } catch (error) {
+      toast.error('Error removing item');
+      console.error('Error removing favorite:', error);
+    }
   };
 
  
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading favorites...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-10 grid grid-cols-4 gap-4">
+    <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {movieItems.length === 0 ? (
-        <p className="col-span-4 text-center">Your favourites list is empty.</p>
+        <div className="col-span-full text-center py-20">
+          <p className="text-xl text-gray-500">Your favourites list is empty.</p>
+          <Button onClick={() => navigate("/movies")} className="mt-4">
+            Browse Movies
+          </Button>
+        </div>
       ) : (
         movieItems.map((item) => (
           <div

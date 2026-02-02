@@ -15,16 +15,25 @@ const MovieCard = ({ movie, showBtns = true, isDescrip = false, user, showBack =
 
   if (!movie) return null; 
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
+    if (!user) {
+      toast.error("Please login to add favorites");
+      return;
+    }
+
     try {
-      const message = addToFav(movie, user);
-      if (message) toast.success(message);
-      else if (user) toast.success("Added to cart!");
-    } catch {
-      toast.success("Added to cart!");
+      const message = await addToFav(movie, user);
+      if (message) {
+        toast.success(message);
+      } else {
+        toast.info("Movie already in favorites!");
+      }
+    } catch (error) {
+      toast.error("Failed to add to favorites");
+      console.error("Error adding to favorites:", error);
     }
   };
 
